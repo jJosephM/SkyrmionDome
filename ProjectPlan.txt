@@ -1,0 +1,11 @@
+Skyrmion Checklist/Plan
+
+1)  Organize Folders
+    a) Make a folder for each type of run based on sample size and current
+    b) Do the same in the terra directory
+
+2)  Import DMI and SpinXfer modules into terra build
+
+3)  Figure out next steps
+
+4)  Figure out in-slurm script variables to reduce possibility of inconsistent core usage
