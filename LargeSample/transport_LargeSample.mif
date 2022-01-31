@@ -1,0 +1,147 @@
+# MIF 2.2
+
+
+set DD [expr {3.5/1000.}]
+
+#As done in paper xcell = 2A/3DD ~ 3.0e-9
+#changed the xy cell size
+set xcell 2.0e-9
+set ycell 2.0e-9
+set zcell 10.0e-9
+
+set film_thickness [expr { 20.0 * $zcell }]
+
+set Ms 1.1e6
+
+set init_center 100e-9
+set dome_height [expr { 6.0 * $zcell }]
+
+set init_skyrmion_x $init_center 
+set init_skyrmion_y $init_center 
+set init_center_rsq_inner [expr { 16*$xcell * 16*$xcell }]
+set init_center_rsq_outer [expr { 32*$xcell * 32*$xcell }]
+
+set xmax [expr { 10*$init_center }]
+set ymax [expr { 6*$init_center }]
+
+set pin_r [expr { 10*$xcell }]
+Specify Oxs_MultiAtlas:atlas [subst {
+   atlas { Oxs_BoxAtlas:pin {
+      xrange { [expr { $init_center - $pin_r }] [expr { $init_center + $pin_r }] }
+      yrange { [expr { $init_center - $pin_r }] [expr { $init_center + $pin_r }] }
+      zrange { 0 $zcell }
+   }}
+   atlas { Oxs_BoxAtlas:left_side {
+      xrange { 0 [expr {$xcell * 4.0}] }
+      yrange { 0 $ymax }
+      zrange { 0 $film_thickness }
+   }}
+   atlas { Oxs_BoxAtlas:right_side {
+      xrange { [expr {$xmax - $xcell * 4.0}] $xmax }
+      yrange { 0 $ymax }
+      zrange { 0 $film_thickness }
+   }}
+   atlas { Oxs_BoxAtlas:film {
+      xrange { 0 $xmax }
+      yrange { 0 $ymax }
+      zrange { 0 $zcell }
+   }}
+   atlas { Oxs_BoxAtlas:world { 
+      xrange { 0 $xmax }
+      yrange { 0 $ymax }
+      zrange { 0 $film_thickness }
+   }}
+}]
+
+Specify Oxs_RectangularMesh:mesh [subst {
+  cellsize { $xcell $ycell $zcell }
+  atlas :atlas
+}]
+
+Specify Oxs_UniformExchange:HeisenbergEx {
+  A 1.6e-11
+}
+
+#uniform DMI is used here
+Specify Oxs_DMExchange6Ngbr:DMEx [subst {
+  default_D $DD
+  atlas :atlas
+  D { 
+    film film $DD
+  }
+}]
+
+
+# in paper k = 2AK/DD^2 = 2A/DD^2*(K1 - mu_0Ms^2/2) = 2(1.6e-11)(0.51e6 - 0.63e-6*(1.1e6)^2)/(3.5e-3)^2 = 1.33e-12
+set K1 0.51e6
+set K1_pin [expr { 2.50*$K1 }]
+Specify Oxs_UniaxialAnisotropy:Anisotropy [subst {
+   axis {0 0 1}
+   K1 { Oxs_AtlasScalarField {
+      atlas :atlas
+      default_value $K1
+      values {
+         pin $K1_pin
+      }
+   }}
+}]
+
+
+#procedure to slowly increase current
+Parameter max_current 35
+proc u_evolve { time } {
+   global max_current
+   set stop_time [expr { 0.1e-9 * $max_current }]
+   if { $time < $stop_time } { return [expr { $time * 1.0e11 }]}
+   return $max_current
+}
+
+
+# in the paper u = Ms/(gammaDD) * u
+# so maximim u = 1.1e6 / (2.21e5 * 3.5e-3) 1.0 = 1400
+# for alpha = 1.0, breakdown occurs around 1200
+# set u 35.0
+Specify Anv_SpinTEvolve [subst {
+  method rkf54
+  do_precess 1
+  gamma_LL 2.21e5
+  alpha 0.025
+  u $max_current
+  beta 0.04
+  fixed_spins { atlas left_side right_side film }
+}]
+
+#try changing length of simulation runtime to account for 
+Specify Oxs_TimeDriver [subst {
+   evolver Anv_SpinTEvolve
+   mesh :mesh
+   stage_count [expr { 90 - $max_current }] 
+   Ms $Ms
+   stopping_time 0.1e-9
+   m0 { Oxs_FileVectorField {
+      atlas :atlas
+      file skyrmionDome-Oxs_MinDriver-Magnetization-00-0003892.omf
+      norm 1
+   }}
+}]
+
+SetOptions {
+   basename ./skyrmionDome
+}
+
+Destination archive mmArchive
+# Destination disp mmDisp
+Schedule Oxs_TimeDriver::Magnetization archive Done
+# Schedule Oxs_TimeDriver::Magnetization disp stage 1
+
+#takes ~30 min per current step
+
+#at u = 35, skyrmion broke after 43ns at 34 nm
+
+#TRY GRADUALLY STEPPING UP U TO 35 AND SEE WHAT HAPPENS
+#SEE IF YOU CAN GET U IN THE +Z DIRECTION TO CHANGE DOME HEIGHT
+#ALSO, NOW YOU CAN RUN MUCH LONGER AND LARGER SIMULATIONS, SO REWRITE EVERYTHING FOR SOMETHING LARGER
+
+#Need to organize better...maybe make a plan of runs on a Latex Document
+#Make copies of scripts for different types of runs and name them accordingly, ex. large sim size vs small
+#Create directories for each type of run ex. u = 35, u = 40 etc.
