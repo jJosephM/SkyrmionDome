@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH --job-name=singleCurrentTest
+#SBATCH --time=10:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=28
+#SBATCH --mem=32G
+
+#SBATCH --mail-type=ALL              
+#SBATCH --mail-user=m0908394@tamu.edu
+
+module purge
+module load Tcl/8.6.11-GCCcore-10.3.0   Tk/8.6.11-GCCcore-10.3.0
+python run_dynamics.py
