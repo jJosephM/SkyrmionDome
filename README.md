@@ -20,11 +20,16 @@ Just a place to hold some code for a paper on skyrmion domes in thick films
 
 ## To Show on Friday 2/11
 [ ] Dragged dome: maybe 120nm dome dragged by low current density
+
 [ ] Split dome 1: a dome at a higher current (~100) with multiple chunks
-[ ] Split dome 2: another dome of a different relaxed height to show that all domes spit at 30nm
+
+[x] Split dome 2: another dome of a different relaxed height to show that all domes spit at 30nm
+
 
 Here's a composite of a dome at various depths
 ![compositeSkyrmionDepth](https://user-images.githubusercontent.com/74024926/151843302-36616cc4-1cac-46bd-99ac-640567006241.png)
 
-Here is a 3D rendition of the dome profile
+Here is a 3D rendition of the dome profile made with Blender
 ![skyrmionDome4](https://user-images.githubusercontent.com/74024926/151843738-cbc5f439-74a9-4815-a828-59b986dfe383.png)
+
+Actually an idea for a project is an addon for Blender that facilitates graphinc vector fields
