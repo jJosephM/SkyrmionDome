@@ -1,4 +1,4 @@
-#The Skyrmiond Dome Repository
+# The Skyrmiond Dome Repository
 
 Just a place to hold some code for a paper on skyrmion domes in thick films
 
@@ -18,7 +18,7 @@ Just a place to hold some code for a paper on skyrmion domes in thick films
 
 4)  Also read up on Markdown to make this thing prettier
 
-##To Show on Friday 2/11
+## To Show on Friday 2/11
 [ ] Dragged dome: maybe 120nm dome dragged by low current density
 [ ] Split dome 1: a dome at a higher current (~100) with multiple chunks
 [ ] Split dome 2: another dome of a different relaxed height to show that all domes spit at 30nm
