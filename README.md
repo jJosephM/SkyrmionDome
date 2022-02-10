@@ -10,7 +10,7 @@ Just a place to hold some code for a paper on skyrmion domes in thick films
 2)  Surprisingly the height of the split seems independent of the height of the dome! Check this, try making the film 300nm and the dome 200nm
 
 3)  Figure out in-slurm script variables to reduce possibility of inconsistent core usage on the cluster
-4)  Also see about Github readme markup language
+4)  Also read up on Markdown to make this thing prettier
 
 Here's a composite of a dome at various depths
 ![compositeSkyrmionDepth](https://user-images.githubusercontent.com/74024926/151843302-36616cc4-1cac-46bd-99ac-640567006241.png)
