@@ -2,7 +2,7 @@
 
 Just a place to hold some code for a paper on skyrmion domes in thick films
 
-## **Checklist/Plan**
+## Checklist/Plan
 
 1)  Double dome height and run current for longer
     a)  Try relaxing the system after a split has ocurred
@@ -18,12 +18,13 @@ Just a place to hold some code for a paper on skyrmion domes in thick films
 
 4)  Also read up on Markdown to make this thing prettier
 
-## To Show on Friday 2/11
-[x] Dragged dome: maybe 120nm dome dragged by low current density **Already done in u_35 folder
+## Next Steps
 
-[x] Split dome 1: a dome at a higher current (~100) with multiple chunks
+1)  Try running small currents (~1,2,3) with a large damping parameter to impose numerical stability
 
-[x] Split dome 2: another dome of a different relaxed height to show that all domes spit at 30nm
+2)  Try making a dome on the *side* of the sample and running a current to see if the height of the dome can be altered
+
+**Ideally we should get that the "birthing" that the relaxed dome will do can be engineered to happen successively at a known current. *And* we should have a good idea of what the stability landscape is as we increase the current
 
 
 Here's a composite of a dome at various depths
