@@ -19,7 +19,7 @@ Just a place to hold some code for a paper on skyrmion domes in thick films
 4)  Also read up on Markdown to make this thing prettier
 
 ## To Show on Friday 2/11
-[ ] Dragged dome: maybe 120nm dome dragged by low current density
+[x] Dragged dome: maybe 120nm dome dragged by low current density **Already done in u_35 folder
 
 [x] Split dome 1: a dome at a higher current (~100) with multiple chunks
 
