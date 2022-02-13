@@ -24,6 +24,8 @@ Just a place to hold some code for a paper on skyrmion domes in thick films
 
 2)  Try making a dome on the *side* of the sample and running a current to see if the height of the dome can be altered
 
+3)  Find new critical current with large damping parameter
+
 **Ideally we should get that the "birthing" that the relaxed dome will do can be engineered to happen successively at a known current. *And* we should have a good idea of what the stability landscape is as we increase the current
 
 
