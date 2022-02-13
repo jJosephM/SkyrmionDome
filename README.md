@@ -1,4 +1,4 @@
-# The Skyrmiond Dome Repository
+# The Skyrmion Dome Repository
 
 Just a place to hold some code for a paper on skyrmion domes in thick films
 
