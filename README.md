@@ -18,6 +18,8 @@ Just a place to hold some code for a paper on skyrmion domes in thick films + ch
 
 ## Next Steps
 
+**We might want to try "relaxing" the dome with a current: use the cylinder as initial magnetization and see what happens if we simply run zero current and a lot of dissipation alpha**
+
 1.  Try running small currents (~1,2,3) with a large damping parameter to impose numerical stability
 
 2.  Try making a dome on the *side* of the sample and running a current to see if the height of the dome can be altered
@@ -26,6 +28,8 @@ Just a place to hold some code for a paper on skyrmion domes in thick films + ch
     a.  Might need to fun concurrently with cluster to speed up process...wtf is the cluster so slow - lower core usage to save billing units
 
 **Ideally we should get that the "birthing" that the relaxed dome will do can be engineered to happen successively at a known current. *And* we should have a good idea of what the stability landscape is as we increase the current**
+
+Reread this readme and reorganize...I can't keep track of all the little experiments going on and I need to find a better way to do so + what are the results?
 
 
 Here's a composite of a dome at various depths
