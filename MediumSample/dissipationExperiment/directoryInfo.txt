@@ -1,2 +1,11 @@
 This directory is for testing dynamics with high dissipation (alpha = 2.5, beta = 4.0)
+
 It is NOT for the dynamic relaxation experiment where we try to "relax" the dome by not pushing current and just dissipate the energy
+
+#Results#
+
+The results so far just stretch the dome (again at 30nm) to the end of the sample for u ~ 150
+
+#To DO
+
+Try even higher currents to detect critical phenomena
