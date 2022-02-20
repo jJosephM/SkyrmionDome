@@ -1,0 +1,12 @@
+This is an attempt to see what happens if we make the film real small ~2x the minimum dome height
+
+#Resuts
+
+Nasty stuff happens to the dome
+
+#To Do
+
+Fiddle around with it:
+  Make the dome the full height of the film (60nm)
+  Come back to it after results of dynamic relaxation experiment
+    Maybe there's something that can be done about the "flattening" that occurs when we make the initial magnetization cylinder too short
