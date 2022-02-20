@@ -1,0 +1,2 @@
+This directory is for testing dynamics with high dissipation (alpha = 2.5, beta = 4.0)
+It is NOT for the dynamic relaxation experiment where we try to "relax" the dome by not pushing current and just dissipate the energy
