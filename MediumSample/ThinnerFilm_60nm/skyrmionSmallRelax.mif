@@ -1,0 +1,106 @@
+# MIF 2.2
+
+
+set DD [expr {3.5/1000.}]
+
+set xcell 2.0e-9
+set ycell 2.0e-9
+set zcell 10.0e-9
+
+set film_thickness [expr { 6.0 * $zcell }]
+
+set Ms 1.1e6
+
+set init_center 100e-9
+set dome_height [expr { 3.0 * $zcell }]
+
+set init_skyrmion_x $init_center 
+set init_skyrmion_y $init_center 
+set init_center_rsq_inner [expr { 16*$xcell * 16*$xcell }]
+set init_center_rsq_outer [expr { 32*$xcell * 32*$xcell }]
+
+# Parameter integer_length 6
+set xmax [expr { 4*$init_center }]
+set ymax [expr { 3*$init_center }]
+
+set pin_r [expr { 10*$xcell }]
+Specify Oxs_MultiAtlas:atlas [subst {
+   atlas { Oxs_BoxAtlas:pin {
+      xrange { [expr { $init_center - $pin_r }] [expr { $init_center + $pin_r }] }
+      yrange { [expr { $init_center - $pin_r }] [expr { $init_center + $pin_r }] }
+      zrange { 0 $zcell }
+   }}
+   atlas { Oxs_BoxAtlas:world { 
+      xrange { 0 $xmax }
+      yrange { 0 $ymax }
+      zrange { 0 $film_thickness }
+   }}
+   atlas { Oxs_BoxAtlas:film {
+      xrange { 0 $xmax }
+      yrange { 0 $ymax }
+      zrange { 0 $zcell }
+   }}
+}]
+
+Specify Oxs_RectangularMesh:mesh [subst {
+  cellsize { $xcell $ycell $zcell }
+  atlas :atlas
+}]
+
+Specify Oxs_UniformExchange:HeisenbergEx {
+  A 1.6e-11
+}
+
+Specify Oxs_DMExchange6Ngbr:DMEx [subst {
+  default_D $DD
+  atlas :atlas
+  D { 
+    film film $DD
+  }
+}]
+
+set K1 0.51e6
+set K1_pin [expr { 2.50*$K1 }]
+Specify Oxs_UniaxialAnisotropy:Anisotropy [subst {
+   axis {0 0 1}
+   K1 { Oxs_AtlasScalarField {
+      atlas :atlas
+      default_value $K1
+      values {
+         pin $K1_pin
+      }
+   }}
+}]
+
+proc Skyrmion { x y z } {
+   global init_skyrmion_x init_skyrmion_y film_thickness zcell
+   global init_center_rsq_inner init_center_rsq_outer dome_height
+   set xoff [expr { $init_skyrmion_x - $x }]
+   set yoff [expr { $init_skyrmion_y - $y }]
+   set rsq [expr { $xoff*$xoff + $yoff*$yoff }]
+   if { $z > $dome_height } { return [list 0. 0. -1.]}
+   if { $rsq < $init_center_rsq_inner } { return [list 0. 0.  1.] }
+   if { $rsq > $init_center_rsq_outer } { return [list 0. 0. -1.] }
+   return [list $xoff $yoff 0]
+}
+
+Specify Oxs_CGEvolve {}
+Specify Oxs_MinDriver [subst {
+  evolver Oxs_CGEvolve
+  stopping_mxHxm 1e-5
+  mesh :mesh
+  Ms $Ms
+  m0 { Oxs_ScriptVectorField { 
+     script Skyrmion
+     atlas :atlas
+     script_args rawpt
+  } }
+}]
+
+
+SetOptions {
+   basename ./skyrmionDome
+}
+
+Destination archive mmArchive
+Schedule Oxs_MinDriver::Magnetization archive Done
