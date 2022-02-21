@@ -1,0 +1,126 @@
+# MIF 2.2
+
+
+set DD [expr {3.5/1000.}]
+
+set xcell 2.0e-9
+set ycell 2.0e-9
+set zcell 10.0e-9
+
+set film_thickness [expr { 20.0 * $zcell }]
+
+set Ms 1.1e6
+
+set init_center 100e-9
+set dome_height [expr { 12.0 * $zcell }]
+
+set init_skyrmion_x $init_center 
+set init_skyrmion_y $init_center 
+set init_center_rsq_inner [expr { 16*$xcell * 16*$xcell }]
+set init_center_rsq_outer [expr { 32*$xcell * 32*$xcell }]
+
+set xmax [expr { 4*$init_center }]
+set ymax [expr { 2*$init_center }]
+
+set pin_r [expr { 10*$xcell }]
+Specify Oxs_MultiAtlas:atlas [subst {
+   atlas { Oxs_BoxAtlas:pin {
+      xrange { [expr { $init_center - $pin_r }] [expr { $init_center + $pin_r }] }
+      yrange { [expr { $init_center - $pin_r }] [expr { $init_center + $pin_r }] }
+      zrange { 0 $zcell }
+   }}
+   atlas { Oxs_BoxAtlas:left_side {
+      xrange { 0 [expr {$xcell * 4.0}] }
+      yrange { 0 $ymax }
+      zrange { 0 $film_thickness }
+   }}
+   atlas { Oxs_BoxAtlas:right_side {
+      xrange { [expr {$xmax - $xcell * 4.0}] $xmax }
+      yrange { 0 $ymax }
+      zrange { 0 $film_thickness }
+   }}
+   atlas { Oxs_BoxAtlas:film {
+      xrange { 0 $xmax }
+      yrange { 0 $ymax }
+      zrange { 0 $zcell }
+   }}
+   atlas { Oxs_BoxAtlas:world { 
+      xrange { 0 $xmax }
+      yrange { 0 $ymax }
+      zrange { 0 $film_thickness }
+   }}
+}]
+
+Specify Oxs_RectangularMesh:mesh [subst {
+  cellsize { $xcell $ycell $zcell }
+  atlas :atlas
+}]
+
+Specify Oxs_UniformExchange:HeisenbergEx {
+  A 1.6e-11
+}
+
+Specify Oxs_DMExchange6Ngbr:DMEx [subst {
+  default_D $DD
+  atlas :atlas
+  D { 
+    film film $DD
+  }
+}]
+
+set K1 0.51e6
+set K1_pin [expr { 2.50*$K1 }]
+Specify Oxs_UniaxialAnisotropy:Anisotropy [subst {
+   axis {0 0 1}
+   K1 { Oxs_AtlasScalarField {
+      atlas :atlas
+      default_value $K1
+      values {
+         pin $K1_pin
+      }
+   }}
+}]
+
+Specify Anv_SpinTEvolve [subst {
+  method rkf54
+  do_precess 1
+  gamma_LL 2.21e5
+  alpha 40.0
+  u 1.0
+  beta 0.0
+  fixed_spins { atlas left_side right_side }
+}]
+
+proc Skyrmion { x y z } {
+   global init_skyrmion_x init_skyrmion_y film_thickness zcell
+   global init_center_rsq_inner init_center_rsq_outer dome_height
+   set xoff [expr { $init_skyrmion_x - $x }]
+   set yoff [expr { $init_skyrmion_y - $y }]
+   set rsq [expr { $xoff*$xoff + $yoff*$yoff }]
+   if { $z > $dome_height } { return [list 0. 0. -1.]}
+   if { $rsq < $init_center_rsq_inner } { return [list 0. 0.  1.] }
+   if { $rsq > $init_center_rsq_outer } { return [list 0. 0. -1.] }
+   return [list $xoff $yoff 0]
+}
+
+Specify Oxs_TimeDriver [subst {
+   evolver Anv_SpinTEvolve
+   mesh :mesh
+   stage_count 43
+   Ms $Ms
+   stopping_time 0.1e-9
+   m0 { Oxs_ScriptVectorField { 
+     script Skyrmion
+     atlas :atlas
+     script_args rawpt
+  } }
+}]
+
+SetOptions {
+   basename ./skyrmionDome
+}
+
+Destination archive mmArchive
+Destination disp mmDisp
+Schedule Oxs_TimeDriver::Magnetization archive Done
+Schedule Oxs_TimeDriver::Magnetization disp stage 1
