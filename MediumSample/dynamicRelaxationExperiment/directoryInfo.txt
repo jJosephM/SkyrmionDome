@@ -1,0 +1,10 @@
+This directory is for the experiment to find the dome's equilibrium configuration by dissipating rather than using energy minimization
+
+#Results
+
+So far, trying no current, small current and large values of alpha and beta the dome rounds off to what it would normally with a conjugate gradient descent
+
+#To DO
+
+Figure out why this is happening...surely the energy of the structure is dependent on the size and shape of the dome, so why doesn't some (or a lot of) dissipation diffuse that excess energy?
+Shouldn't the dome actually fall into the same stable orientation as the split dome?
