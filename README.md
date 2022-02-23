@@ -2,6 +2,10 @@
 
 Just a place to hold some code for a paper on skyrmion domes in thick films + checklists and some results
 
+## Reading
+
+Review spin transfer torque, then look back over spin statistics and reread Zhang and Li
+
 ## Checklist/Plan
 
 1.  Double dome height and run current for longer
