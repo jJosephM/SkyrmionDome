@@ -6,6 +6,21 @@ Just a place to hold some code for a paper on skyrmion domes in thick films + ch
 
 Review spin transfer torque, then look back over spin statistics and reread Zhang and Li
 
+**The main thing here is to understand what is happening at the dome peak, and how/if this is affecting the single shed under the pinned current**
+
+## We're starting over!
+
+Use the proposal as a starting guide
+Make a new folder for this path
+Begin by verifying the height versus radius relations and their compatibility with material parameters
+Compare simulated material parameters with actual materials: try to use materials that are easy to manufacture in multilayers
+Look into domain wall width and skyrmion height/width with the numerical values of the material
+
+
+
+
+
+
 ## Checklist/Plan
 
 1.  Double dome height and run current for longer
@@ -42,4 +57,4 @@ Here's a composite of a dome at various depths
 Here is a 3D rendition of the dome profile made with Blender
 ![skyrmionDome4](https://user-images.githubusercontent.com/74024926/151843738-cbc5f439-74a9-4815-a828-59b986dfe383.png)
 
-Actually an idea for a project is an addon for Blender that facilitates graphinc vector fields
+Actually an idea for a project is an addon for Blender that facilitates graphing vector fields
