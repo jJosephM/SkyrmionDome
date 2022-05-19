@@ -10,6 +10,8 @@ Review spin transfer torque, then look back over spin statistics and reread Zhan
 
 ## We're starting over!
 
+**Follow suggestions from organizational paper - make a notebook that chronologically labels what happened each day and use this readme for results
+
 Use the proposal as a starting guide
 Make a new folder for this path
 Begin by verifying the height versus radius relations and their compatibility with material parameters
