@@ -1,1 +1,4 @@
 Here we lowered the exchange energy of the dome to match cobalt, found height versus radius for K = ..... and wrote python codes to compute the energy coefficients and their ratios from the oommf vector field outputs
+radVsHeight.mif is the oommf input file that has a narrow width and the cobalt parameters and can have height and radius easily adjusted
+integrateB_over_A.py finds the energy coefficients A and B and computes B/A given an oommf vector field output file
+domeLeastSquares.py computes the least-squares fit to a quadratic function of height versus radius for manual values of each
