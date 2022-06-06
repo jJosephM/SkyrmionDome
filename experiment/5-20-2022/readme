@@ -1,0 +1,6 @@
+Here we have relaxed the dome with parameters resembling crystal cobalt, namely:
+A = 1.0e-11
+K = 0.41e6
+D = 2.4e-3
+
+Also the mesh discretization has a height to width ratio of 8/5 which very closely resembles the c/a of the hcp structure of cobalt
