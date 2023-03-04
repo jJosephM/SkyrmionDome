@@ -1,0 +1,109 @@
+# MIF 2.2
+
+set xmax 1500e-9
+set zmax 2000e-9
+set ymax 300e-9
+set amp [expr { 4 * $zmax / ($xmax * $xmax) }]
+
+set xcell 5e-9
+set ycell 5e-9
+set zcell 8e-9
+
+set thickness [expr { 2 * $zcell }]
+set offset [expr { 0.75 * $zmax }]
+
+set ztop [expr { $zcell*(1 + floor(($zmax-$offset) / $zcell)) }]
+set halfx [expr { $xmax / 2 }]
+set halfy [expr { $ymax / 2 }]
+
+proc Curved { x y z } {
+    global xmax amp thickness offset
+    set xcom [expr {$x - $xmax}]
+    set test1 [expr {$z + $x*$xcom*$amp + $offset}]
+    set test2 [expr {$z + $x*$xcom*$amp + $thickness + $offset}]
+    if {$test1 < 0.0 && $test2 > 0.0} {return 1}
+    return 0
+}
+
+Specify Oxs_ScriptAtlas:atlas [subst {
+  xrange {0 $xmax}
+  yrange {0 $ymax}
+  zrange {0 $ztop}
+  regions { sheet }
+  script_args { rawpt }
+  script Curved
+}]
+
+Specify Oxs_RectangularMesh:mesh [subst {
+  cellsize { $xcell $ycell $zcell }
+  atlas :atlas
+}]
+
+# Exchange
+Specify Oxs_UniformExchange {
+  A 2.0e-11
+}
+
+set DD [expr {1.4/1000.}]
+Specify Oxs_DMExchange6Ngbr:DMEx [subst {
+  default_D $DD
+  atlas :atlas
+  D { 
+    sheet sheet $DD
+  }
+}]
+
+set K1 6.3e4
+set K1_pin 1e5
+Specify Oxs_UniaxialAnisotropy:Anisotropy [subst {
+   axis { Oxs_ScriptVectorField {
+    atlas :atlas
+    script_args { rawpt }
+    script normal
+    norm  1
+ }}
+   K1 $K1
+}]
+
+Specify Oxs_CGEvolve:evolve {}
+
+Specify Oxs_MinDriver {
+ evolver :evolve
+ stopping_mxHxm 0.1
+ mesh :mesh
+ Ms { Oxs_AtlasScalarField {
+    atlas :atlas
+    default_value 0.0
+    values {
+       sheet 0.3e6
+    }
+ }}
+ m0 { Oxs_ScriptVectorField {
+    atlas :atlas
+    script_args { rawpt }
+    script Skyrmion
+    norm  1
+ }}
+}
+
+set init_skyrmion_x $halfx 
+set init_skyrmion_y $halfy
+set init_center_rsq_inner [expr { 20*$xcell * 20*$xcell }]
+set init_center_rsq_outer [expr { 25*$xcell * 25*$xcell }]
+
+proc Skyrmion { x y z } {
+   global init_skyrmion_x init_skyrmion_y
+   global init_center_rsq_inner init_center_rsq_outer
+   set xoff [expr { $x - $init_skyrmion_x }]
+   set yoff [expr { $y - $init_skyrmion_y }]
+   set rsq [expr { $xoff*$xoff + $yoff*$yoff }]
+   if { $rsq < $init_center_rsq_inner } { return [list 0. 0. -1.] }
+   if { $rsq > $init_center_rsq_outer } { return [list 0. 0. 1.] }
+   return [list $xoff $yoff 0]
+}
+
+proc normal { x y z } {
+  global amp xmax
+  set xcom [expr { $amp * (2*$x - $xmax)}]
+  return [list $xcom 0 1]
+}
